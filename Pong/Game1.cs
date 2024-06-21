@@ -31,7 +31,6 @@ namespace Pong
 
         PaddleObject paddle;
         BlockManager blockMan;
-        static BallObject theBall;
 
 
         public Game1()
@@ -73,7 +72,7 @@ namespace Pong
 
             blockMan = new BlockManager(_blockTexture);
 
-            theBall = new BallObject(_ballTexture);
+            Globals.theBall = new BallObject(_ballTexture);
 
             // initialize paddle
             paddle = new PaddleObject(_paddleTexture);
@@ -88,7 +87,7 @@ namespace Pong
             // object updates
             paddle.Update(gameTime, Keyboard.GetState());
             blockMan.Update(gameTime);
-            theBall.Update(gameTime);
+            Globals.theBall.Update(gameTime);
 
 
             // TODO: Add your update logic here
@@ -109,7 +108,7 @@ namespace Pong
 
             paddle.Draw(_spriteBatch);
             blockMan.Draw(_spriteBatch);
-            theBall.Draw(_spriteBatch);
+            Globals.theBall.Draw(_spriteBatch);
 
             //_spriteBatch.DrawString(bitwiseFont, "Bubsy 3d", new Vector2(200, 0), Color.White);
 

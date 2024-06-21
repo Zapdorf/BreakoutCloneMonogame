@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace Pong.GameObjects
 {
-    internal class BallObject
+    public class BallObject
     {
         private Vector2 _ballPosition;
         private Texture2D _ballTexture;
@@ -17,6 +18,8 @@ namespace Pong.GameObjects
         private Vector2 _velocity; // direction, normal vector
         private float _bounceAccelerationAmount; // boost speed after hitting a block
         private float _speed;
+
+        private Random rand;
 
         //public CollisionDetector collider;
 
@@ -32,6 +35,9 @@ namespace Pong.GameObjects
             _speed = 250;
 
             Globals.ballCollider = new CollisionDetector(_ballTexture.Width, _ballTexture.Height);
+
+            rand = new Random();
+            var a = RandomNum(-5, -2); // <--- breaks and gives 0
         }
 
         public void Update(GameTime gameTime)
@@ -97,7 +103,19 @@ namespace Pong.GameObjects
             normal.Normalize();
             _velocity.Normalize();
             _velocity = (_velocity - 2 * DotProd(normal, _velocity) * normal);
+            //_velocity += (new Vector2((float)RandomNum(-0.5f, 0.5f), (float)RandomNum(-0.5f, 0.5f)))/4;// jitter
             _velocity.Normalize();
+        }
+
+        public void BounceGap(Vector2 normal)
+        {
+            _ballPosition += 5 * normal;
+        }
+
+        private double RandomNum(float min, float max)
+        {
+            double range = max - min;
+            return (rand.NextDouble() * range) + min;
         }
 
         private float DotProd(Vector2 vec1, Vector2 vec2)

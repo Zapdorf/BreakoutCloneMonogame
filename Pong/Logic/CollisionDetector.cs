@@ -15,6 +15,13 @@ namespace Pong.Logic
 
         // test collision with color changing when you move the paddle onto the ball or something
 
+
+        // to determine bounce normal on a block
+        // calculate rays out from object center to corners
+        // this subdivides into 4 spots in a radial fashion
+        // calculate the direction from block center to ball center
+        // figure out based on degree which quad it falls into
+
         public CollisionDetector(float w, float h)
         {
             halfWidth = w/2;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Pong.GameObjects;
 using Pong.Logic;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,8 @@ namespace Pong
 
         public static CollisionDetector ballCollider { get; set; }
         public static CollisionDetector paddleCollider { get; set; }
+
+        public static BallObject theBall { get; set; }  
 
         public static void Update(GameTime gameTime)
         {

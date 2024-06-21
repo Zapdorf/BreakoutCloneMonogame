@@ -37,6 +37,15 @@ namespace Pong.GameObjects
         {
             // check for collision or something against the ball
             // figure out normal based on the ball's velocity
+
+            if (!broken && collider.IsColliding(Globals.ballCollider))
+            {
+                // hit ball
+                Vector2 norm = new Vector2(0, 1); // temp
+                Globals.theBall.BounceGap(norm);
+                Globals.theBall.Bounce(norm);
+                GetHit();
+            }
         }
 
         public void Draw(SpriteBatch batch)
@@ -48,7 +57,10 @@ namespace Pong.GameObjects
         {
             // increase score
             // call block manager
+
             // either hide or delete entirely
+            broken = true;
+
             // do a visual effect thing
             // play a sound
         }

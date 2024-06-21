@@ -37,6 +37,10 @@ namespace Pong.Logic
         public void Update(GameTime gameTime)
         {
             // update all blocks (?)
+            foreach (BlockObject block in blockList)
+            {
+                block.Update(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch batch)
