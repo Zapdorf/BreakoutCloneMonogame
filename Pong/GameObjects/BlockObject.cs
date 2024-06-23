@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Pong.Logic;
 using System;
@@ -21,7 +22,9 @@ namespace Pong.GameObjects
 
         private bool broken;
 
-        public BlockObject(Texture2D texture, Color blockColor, Vector2 blockPos) 
+        private SoundEffect brokeSound;
+
+        public BlockObject(Texture2D texture, Color blockColor, Vector2 blockPos, SoundEffect hitSound) 
         {
             _blockTexture = texture;
             _blockColor = blockColor;
@@ -31,6 +34,8 @@ namespace Pong.GameObjects
             collider.position = _blockPositon;
 
             broken = false;
+
+            brokeSound = hitSound;
         }
 
         public void Update(GameTime gameTime)
@@ -41,7 +46,9 @@ namespace Pong.GameObjects
             if (!broken && collider.IsColliding(Globals.ballCollider))
             {
                 // hit ball
-                Vector2 norm = new Vector2(0, 1); // temp
+                Vector2 norm = DetermineNormal();
+
+
                 Globals.theBall.BounceGap(norm);
                 Globals.theBall.Bounce(norm);
                 GetHit();
@@ -53,6 +60,35 @@ namespace Pong.GameObjects
             if(!broken) batch.Draw(_blockTexture, _blockPositon, _blockColor);
         }
 
+        private Vector2 DetermineNormal()
+        {
+            var ballPosCent = Globals.theBall.GetBallPositionCenter();
+
+            var result = new Vector2(0,1);
+
+            // assuming collision get relative position
+            var leftEdgeX = _blockPositon.X;
+            var rightEdgeX = _blockPositon.X + _blockTexture.Width;
+            if (ballPosCent.X < leftEdgeX)
+            {
+                result = new Vector2(-1, 0);
+            }
+            else if (ballPosCent.X > rightEdgeX)
+            {
+                result = new Vector2(1, 0);
+            }
+            else if (ballPosCent.Y < _blockPositon.Y)
+            {
+                result = new Vector2(0, -1);
+            }
+            else if (ballPosCent.Y > _blockPositon.Y + _blockTexture.Height)
+            {
+                result = new Vector2(0, 1);
+            } 
+
+            return result;
+        }
+
         private void GetHit()
         {
             // increase score
@@ -62,7 +98,9 @@ namespace Pong.GameObjects
             broken = true;
 
             // do a visual effect thing
+
             // play a sound
+            brokeSound.Play();
         }
     }
 }

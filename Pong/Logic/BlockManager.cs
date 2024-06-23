@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Pong.GameObjects;
 using SharpDX.Direct3D11;
@@ -24,12 +25,16 @@ namespace Pong.Logic
         private List<Color> _colorOptionList;
         private Texture2D _blockTexture;
 
-        public BlockManager(Texture2D texture) 
+        private SoundEffect _brokenSoundEffect;
+
+        public BlockManager(Texture2D texture, SoundEffect sound) 
         {
             blockList = new List<BlockObject>();
             _blockTexture = texture;
 
             _colorOptionList = new List<Color>() { Color.Purple, Color.BlueViolet, Color.MediumVioletRed };
+
+            _brokenSoundEffect = sound;
 
             GenerateBlocks();
         }
@@ -68,7 +73,7 @@ namespace Pong.Logic
             {
                 for (int col=0; col < blocksWide; col++)
                 {
-                    BlockObject block = new BlockObject(_blockTexture, _colorOptionList[colorIndex % _colorOptionList.Count], currentPosition);
+                    BlockObject block = new BlockObject(_blockTexture, _colorOptionList[colorIndex % _colorOptionList.Count], currentPosition, _brokenSoundEffect);
                     blockList.Add(block);
                     
                     colorIndex++;

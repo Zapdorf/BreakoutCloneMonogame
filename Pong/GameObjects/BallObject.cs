@@ -22,12 +22,14 @@ namespace Pong.GameObjects
         private Random rand;
 
         //public CollisionDetector collider;
+        private double disableTimer;
 
         public BallObject(Texture2D texture) 
         {
             _ballTexture = texture;
             //_ballPosition = new Vector2((Globals.ScreenWidth / 2) - (_ballTexture.Width/2), Globals.ScreenHeight / 2);
             _ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
+            //_ballPosition = new Vector2(0, 0);
 
             //_velocity = new Vector2(0, 1);
             _velocity = new Vector2(0.5f, 0.5f);
@@ -38,6 +40,8 @@ namespace Pong.GameObjects
 
             rand = new Random();
             var a = RandomNum(-5, -2); // <--- breaks and gives 0
+
+            disableTimer = 0;
         }
 
         public void Update(GameTime gameTime)
@@ -81,17 +85,21 @@ namespace Pong.GameObjects
                 Bounce(new Vector2(0, 1));
             }
 
-            // paddle collision
-            if (Globals.paddleCollider.IsColliding(Globals.ballCollider))
-            {
-                _ballPosition.Y -= 10;
-                Bounce(new Vector2(0, -1));
-            }
+            // update disable timer
+            UpdateDisableTimer(gameTime);
         }
 
         public void Draw(SpriteBatch batch)
         {
             batch.Draw(_ballTexture, _ballPosition, Color.White);
+        }
+
+        public Vector2 GetBallPositionCenter()
+        {
+            return new Vector2(
+                _ballPosition.X + (_ballTexture.Width / 2), 
+                _ballPosition.Y + (_ballTexture.Height / 2)
+            );
         }
 
         public void Bounce(Vector2 normal)
@@ -105,11 +113,32 @@ namespace Pong.GameObjects
             _velocity = (_velocity - 2 * DotProd(normal, _velocity) * normal);
             //_velocity += (new Vector2((float)RandomNum(-0.5f, 0.5f), (float)RandomNum(-0.5f, 0.5f)))/4;// jitter
             _velocity.Normalize();
+
+            TemporarilyDisableCollider();
         }
 
         public void BounceGap(Vector2 normal)
         {
             _ballPosition += 5 * normal;
+        }
+
+        private void UpdateDisableTimer(GameTime gameTime)
+        {
+            if(disableTimer > 0)
+            {
+                disableTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            
+            if(disableTimer <= 0 && Globals.ballCollider.disabled)
+            {
+                Globals.ballCollider.disabled = false;
+            }
+        }
+
+        private void TemporarilyDisableCollider()
+        {
+            Globals.ballCollider.disabled = true;
+            disableTimer = 0.1f;
         }
 
         private double RandomNum(float min, float max)

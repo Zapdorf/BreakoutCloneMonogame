@@ -13,6 +13,8 @@ namespace Pong.Logic
         public float halfHeight;
         public Vector2 position { get; set; }
 
+        public bool disabled;
+
         // test collision with color changing when you move the paddle onto the ball or something
 
 
@@ -26,10 +28,13 @@ namespace Pong.Logic
         {
             halfWidth = w/2;
             halfHeight = h/2;
+            disabled = false;
         }
         
         public bool IsColliding(CollisionDetector other)
         {
+            if (disabled || other.disabled) return false;
+            
             var otherCenter = other.GetCenter();
             var thisCenter = GetCenter();
 

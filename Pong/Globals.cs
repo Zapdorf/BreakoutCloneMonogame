@@ -29,5 +29,10 @@ namespace Pong
         {
             ElapsedSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
+
+        public static double DotProd(Vector2 vec1, Vector2 vec2)
+        {
+            return (vec1.X * vec2.X) + (vec1.Y * vec2.Y);
+        }
     }
 }

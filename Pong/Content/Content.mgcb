@@ -63,3 +63,39 @@
 /processorParam:TextureFormat=Color
 /build:Images/paddle.png
 
+#begin Sound/blipSelect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/blipSelect.wav
+
+#begin Sound/explosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/explosion.wav
+
+#begin Sound/explosion2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/explosion2.wav
+
+#begin Sound/hitHurt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/hitHurt.wav
+
+#begin Sound/powerUp.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/powerUp.wav
+
+#begin Sound/synth.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/synth.wav
+

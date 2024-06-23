@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Pong.GameObjects;
@@ -16,6 +17,9 @@ namespace Pong
         private Texture2D _ballTexture;
         private Texture2D _paddleTexture;
         private Texture2D _blockTexture;
+
+        private SoundEffect brokenSound;
+        private SoundEffect paddleHitSound;
 
         SpriteFont bitwiseFont;
         SpriteFont arialTextFont;
@@ -66,16 +70,19 @@ namespace Pong
             bitwiseFont = Content.Load<SpriteFont>("Fonts/Bitwise");
             arialTextFont = Content.Load<SpriteFont>("Fonts/galleryFont");
 
+            brokenSound = Content.Load<SoundEffect>("Sound/explosion");
+            paddleHitSound = Content.Load<SoundEffect>("Sound/hitHurt");
+
 
             // initialize game manager
             _gameManager = new();
 
-            blockMan = new BlockManager(_blockTexture);
+            blockMan = new BlockManager(_blockTexture, brokenSound);
 
             Globals.theBall = new BallObject(_ballTexture);
 
             // initialize paddle
-            paddle = new PaddleObject(_paddleTexture);
+            paddle = new PaddleObject(_paddleTexture, paddleHitSound);
         }
 
         protected override void Update(GameTime gameTime)

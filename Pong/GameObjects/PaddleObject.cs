@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Pong.Logic;
@@ -21,12 +22,15 @@ namespace Pong.GameObjects
         private int _paddleSpeed = 350;
         private int _paddleHalfWidth;
 
+        private SoundEffect _paddleHitSound;
 
-        public PaddleObject(Texture2D texture) {
+        public PaddleObject(Texture2D texture, SoundEffect paddleHit) {
             _paddleTexture = texture;
 
             _paddleHalfWidth = _paddleTexture.Width / 2;
             _paddlePosition = new Vector2((Globals.ScreenWidth / 2) - _paddleHalfWidth, Globals.ScreenHeight - 100);
+
+            _paddleHitSound = paddleHit;
 
             Globals.paddleCollider = new CollisionDetector(_paddleTexture.Width, _paddleTexture.Height);
         }
@@ -43,11 +47,11 @@ namespace Pong.GameObjects
 
 
             // debug y movement
-            paddleDirection = 0;
+            /*paddleDirection = 0;
             if (keyState.IsKeyDown(Keys.Up)) paddleDirection -= 1;
             if (keyState.IsKeyDown(Keys.Down)) paddleDirection += 1;
             _paddlePosition.Y += paddleDirection * _paddleSpeed *
-                (float)gameTime.ElapsedGameTime.TotalSeconds;
+                (float)gameTime.ElapsedGameTime.TotalSeconds;*/
 
 
             // boundaries
@@ -55,6 +59,18 @@ namespace Pong.GameObjects
             float minX = 0;
             if (_paddlePosition.X > maxX) _paddlePosition.X = maxX;
             if (_paddlePosition.X < minX) _paddlePosition.X = minX;
+
+
+
+            // paddle collision
+            if (Globals.paddleCollider.IsColliding(Globals.ballCollider))
+            {
+                var paddleNormal = new Vector2(0, -1);
+                Globals.theBall.BounceGap(paddleNormal);
+                Globals.theBall.Bounce(paddleNormal);
+
+                _paddleHitSound.Play();
+            }
         }
 
         public void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch batch)
