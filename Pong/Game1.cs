@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Pong.GameObjects;
+using Pong.Graphics.ParticleSystem;
 using Pong.Logic;
 
 namespace Pong
@@ -20,6 +21,8 @@ namespace Pong
 
         private SoundEffect brokenSound;
         private SoundEffect paddleHitSound;
+        private SoundEffect ballDeadSound;
+        private SoundEffect victorySound;
 
         SpriteFont bitwiseFont;
         SpriteFont arialTextFont;
@@ -35,6 +38,7 @@ namespace Pong
 
         PaddleObject paddle;
         BlockManager blockMan;
+        UiManager uiManager;
 
 
         public Game1()
@@ -54,6 +58,14 @@ namespace Pong
             Globals.ScreenHeight = screenHeight;
             Globals.ScreenWidth = screenWidth;
 
+            Globals.scoreMultiplier = 1;
+
+            Globals.soundEnabled = false;
+
+            Globals.debugValue = "debug";
+
+            Globals.Content = Content;
+
             base.Initialize();
         }
 
@@ -72,14 +84,18 @@ namespace Pong
 
             brokenSound = Content.Load<SoundEffect>("Sound/explosion");
             paddleHitSound = Content.Load<SoundEffect>("Sound/hitHurt");
+            ballDeadSound = Content.Load<SoundEffect>("Sound/synth");
+            victorySound = Content.Load<SoundEffect>("Sound/powerUp");
 
 
             // initialize game manager
             _gameManager = new();
 
-            blockMan = new BlockManager(_blockTexture, brokenSound);
+            uiManager = new(bitwiseFont, arialTextFont);
 
-            Globals.theBall = new BallObject(_ballTexture);
+            blockMan = new BlockManager(_blockTexture, brokenSound, victorySound);
+
+            Globals.theBall = new BallObject(_ballTexture, ballDeadSound);
 
             // initialize paddle
             paddle = new PaddleObject(_paddleTexture, paddleHitSound);
@@ -90,6 +106,7 @@ namespace Pong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            //if (Keyboard.GetState().IsKeyDown(Keys.Space)) ParticleManager.AddParticle(new(Globals.theBall.GetBallPositionCenter(), new()));
 
             // object updates
             paddle.Update(gameTime, Keyboard.GetState());
@@ -99,7 +116,7 @@ namespace Pong
 
             // TODO: Add your update logic here
             Globals.Update(gameTime);
-            _gameManager.Update();
+            _gameManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -108,16 +125,20 @@ namespace Pong
         {
             GraphicsDevice.Clear(Color.Black);
 
-            _gameManager.Draw();
+            
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
             paddle.Draw(_spriteBatch);
             blockMan.Draw(_spriteBatch);
+
+            _gameManager.Draw(_spriteBatch);
             Globals.theBall.Draw(_spriteBatch);
 
-            //_spriteBatch.DrawString(bitwiseFont, "Bubsy 3d", new Vector2(200, 0), Color.White);
+            
+
+            uiManager.Draw(_spriteBatch);
 
             _spriteBatch.End();
 

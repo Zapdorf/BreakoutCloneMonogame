@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Pong.Graphics.ParticleSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +18,14 @@ namespace Pong
             
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-
+            ParticleManager.Update();
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch batch)
         {
-
+            ParticleManager.Draw(batch);
         }
     }
 }

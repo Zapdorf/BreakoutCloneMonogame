@@ -1,8 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Pong.Graphics.ParticleSystem;
 using Pong.Logic;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,79 +22,76 @@ namespace Pong.GameObjects
         private float _bounceAccelerationAmount; // boost speed after hitting a block
         private float _speed;
 
-        private Random rand;
+        private bool _ballIsDead;
 
-        //public CollisionDetector collider;
-        private double disableTimer;
+        private List<Timer> _timers;
 
-        public BallObject(Texture2D texture) 
+        private SoundEffect _ballDeadSoundEffect;
+
+        private ParticleEmitter _emitter;
+
+
+        private const float DEFAULT_SPEED = 250;
+
+        public BallObject(Texture2D texture, SoundEffect ballDeadSound) 
         {
+            _ballIsDead = false;
             _ballTexture = texture;
             //_ballPosition = new Vector2((Globals.ScreenWidth / 2) - (_ballTexture.Width/2), Globals.ScreenHeight / 2);
-            _ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
+            _ballPosition = new Vector2((Globals.ScreenWidth / 2) - (_ballTexture.Width/2), Globals.ScreenHeight / 2);
+            //_ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
             //_ballPosition = new Vector2(0, 0);
 
             //_velocity = new Vector2(0, 1);
-            _velocity = new Vector2(0.5f, 0.5f);
+            //_velocity = new Vector2(0.5f, 0.5f);
+            _velocity = new Vector2(0.5f, -0.5f);
+            //_velocity = new Vector2(0f, -0.5f);
+            //_velocity = new Vector2(0f, 0f);
             _velocity.Normalize();
-            _speed = 250;
+            _speed = DEFAULT_SPEED;
+
+            _ballDeadSoundEffect = ballDeadSound;
 
             Globals.ballCollider = new CollisionDetector(_ballTexture.Width, _ballTexture.Height);
 
-            rand = new Random();
-            var a = RandomNum(-5, -2); // <--- breaks and gives 0
+            _timers = new List<Timer>();
 
-            disableTimer = 0;
+
+            // emission
+            ParticleEmitterData particleEmitterData = new ParticleEmitterData()
+            {
+                emissionInterval = 0.1f,
+                emittedEveryInterval = 10,
+                angleVariance = 100
+            };
+            //_emitter = new ParticleEmitter(particleEmitterData);
+            //ParticleManager.AddParticleEmitter(_emitter);
         }
 
         public void Update(GameTime gameTime)
         {
             Globals.ballCollider.position = _ballPosition;
-            
-            
-            // basic movement
-            float speedAndTime = _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _ballPosition.X += _velocity.X * speedAndTime;
-            _ballPosition.Y += _velocity.Y * speedAndTime;
 
+            //_emitter.emissionPosition = GetBallPositionCenter();
+
+            _speed = DEFAULT_SPEED + ((Globals.scoreMultiplier-1) * 50 );
+
+            // basic movement
+            BasicMovement(gameTime);
 
             // check for wall bounces
+            CheckForWallBounces();
 
-            // boundaries
-            float maxX = Globals.ScreenWidth - _ballTexture.Width;
-            float minX = 0;
-            float maxY = Globals.ScreenHeight - _ballTexture.Height;
-            float minY = 0;
-
-            if (_ballPosition.X > maxX) // right wall
+            // update timers
+            foreach(Timer timer in _timers)
             {
-                _ballPosition.X = maxX;
-                Bounce(new Vector2(-1, 0));
-
+                timer.Update(gameTime);
             }
-            if (_ballPosition.X < minX) // left wall
-            { 
-                _ballPosition.X = minX;
-                Bounce(new Vector2(1, 0));
-            }
-            if (_ballPosition.Y > maxY) // bottom
-            {
-                _ballPosition.Y = maxY;
-                Bounce(new Vector2(0, -1));
-            }
-            if (_ballPosition.Y < minY) // top
-            {
-                _ballPosition.Y = minY;
-                Bounce(new Vector2(0, 1));
-            }
-
-            // update disable timer
-            UpdateDisableTimer(gameTime);
         }
 
         public void Draw(SpriteBatch batch)
         {
-            batch.Draw(_ballTexture, _ballPosition, Color.White);
+            if(!_ballIsDead) batch.Draw(_ballTexture, _ballPosition, Color.White);
         }
 
         public Vector2 GetBallPositionCenter()
@@ -111,10 +111,9 @@ namespace Pong.GameObjects
             normal.Normalize();
             _velocity.Normalize();
             _velocity = (_velocity - 2 * DotProd(normal, _velocity) * normal);
-            //_velocity += (new Vector2((float)RandomNum(-0.5f, 0.5f), (float)RandomNum(-0.5f, 0.5f)))/4;// jitter
             _velocity.Normalize();
 
-            TemporarilyDisableCollider();
+            //TemporarilyDisableCollider();
         }
 
         public void BounceGap(Vector2 normal)
@@ -122,34 +121,111 @@ namespace Pong.GameObjects
             _ballPosition += 5 * normal;
         }
 
-        private void UpdateDisableTimer(GameTime gameTime)
+        public void PaddleBounce(Vector2 newDirection)
         {
-            if(disableTimer > 0)
-            {
-                disableTimer -= gameTime.ElapsedGameTime.TotalSeconds;
-            }
+            // completely changes velocity
+            newDirection.Normalize();
+            _velocity = newDirection;
+        }
+
+        public void NewLevelReset()
+        {
+            _ballIsDead = true;
+
+            _ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
+            _velocity = Vector2.Zero;
+
+            // start timer
+            _timers.Add(new Timer(1.5f, BallReset));
+        }
+
+        private void BasicMovement(GameTime gameTime)
+        {
+            float speedAndTime = _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _ballPosition.X += _velocity.X * speedAndTime;
+            _ballPosition.Y += _velocity.Y * speedAndTime;
+        }
+
+        private void CheckForWallBounces()
+        {
+            if (_ballIsDead) return;
             
-            if(disableTimer <= 0 && Globals.ballCollider.disabled)
+            // boundaries
+            float maxX = Globals.ScreenWidth - _ballTexture.Width;
+            float minX = 0;
+            float maxY = Globals.ScreenHeight - _ballTexture.Height;
+            float minY = 0;
+
+            if (_ballPosition.X > maxX) // right wall
             {
-                Globals.ballCollider.disabled = false;
+                _ballPosition.X = maxX;
+                Bounce(new Vector2(-1, 0));
+
+            }
+            if (_ballPosition.X < minX) // left wall
+            {
+                _ballPosition.X = minX;
+                Bounce(new Vector2(1, 0));
+            }
+            if (_ballPosition.Y > maxY) // bottom
+            {
+                //_ballPosition.Y = maxY;
+                //Bounce(new Vector2(0, -1));
+
+
+                // dead
+                BallDie();
+            }
+            if (_ballPosition.Y < minY) // top
+            {
+                _ballPosition.Y = minY;
+                Bounce(new Vector2(0, 1));
             }
         }
 
         private void TemporarilyDisableCollider()
         {
             Globals.ballCollider.disabled = true;
-            disableTimer = 0.1f;
+            _timers.Add(new Timer(0.5, ReenableCollider));
         }
 
-        private double RandomNum(float min, float max)
+        private void ReenableCollider()
         {
-            double range = max - min;
-            return (rand.NextDouble() * range) + min;
+            Globals.ballCollider.disabled = false;
         }
 
         private float DotProd(Vector2 vec1, Vector2 vec2)
         {
             return (vec1.X * vec2.X) + (vec1.Y * vec2.Y);
+        }
+
+        private void BallDie()
+        {
+            // play sound
+            if(Globals.soundEnabled) _ballDeadSoundEffect.Play();
+
+            _ballIsDead = true;
+            _velocity = Vector2.Zero;
+
+            // start timer
+            _timers.Add(new Timer(1.5f, BallReset));
+        }
+
+        private void BallReset()
+        {
+            _ballIsDead = false;
+            _ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
+
+            _velocity = new Vector2(0.5f, 0.5f);
+            _velocity.Normalize();
+
+            Globals.scoreMultiplier = 1;
+            _speed = DEFAULT_SPEED;
+        }
+
+        private void TestTimerAction()
+        {
+            Globals.debugValue = "Timer finished";
         }
     }
 }

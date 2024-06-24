@@ -24,7 +24,9 @@ namespace Pong.GameObjects
 
         private SoundEffect brokeSound;
 
-        public BlockObject(Texture2D texture, Color blockColor, Vector2 blockPos, SoundEffect hitSound) 
+        private BlockManager _manager;
+
+        public BlockObject(Texture2D texture, Color blockColor, Vector2 blockPos, SoundEffect hitSound, BlockManager manager) 
         {
             _blockTexture = texture;
             _blockColor = blockColor;
@@ -36,6 +38,8 @@ namespace Pong.GameObjects
             broken = false;
 
             brokeSound = hitSound;
+
+            _manager = manager;
         }
 
         public void Update(GameTime gameTime)
@@ -58,6 +62,11 @@ namespace Pong.GameObjects
         public void Draw(SpriteBatch batch)
         {
             if(!broken) batch.Draw(_blockTexture, _blockPositon, _blockColor);
+        }
+
+        public void Revive()
+        {
+            broken = false;
         }
 
         private Vector2 DetermineNormal()
@@ -92,7 +101,10 @@ namespace Pong.GameObjects
         private void GetHit()
         {
             // increase score
+            Globals.score += 10 * Globals.scoreMultiplier;
+
             // call block manager
+            _manager.BlockDestroyed(0);
 
             // either hide or delete entirely
             broken = true;
@@ -100,7 +112,10 @@ namespace Pong.GameObjects
             // do a visual effect thing
 
             // play a sound
-            brokeSound.Play();
+            if (Globals.soundEnabled) brokeSound.Play();
+
+            // score multiplier
+            if (Globals.scoreMultiplier < 6) Globals.scoreMultiplier++;
         }
     }
 }

@@ -38,7 +38,68 @@ namespace Pong.GameObjects
         public void Update(GameTime gameTime, KeyboardState keyState)
         {
             Globals.paddleCollider.position = _paddlePosition;
-            
+
+
+            PaddleMovement(gameTime, keyState);
+
+
+            // paddle collision
+            if (Globals.paddleCollider.IsColliding(Globals.ballCollider))
+            {
+                BallCollision();
+            }
+        }
+
+        public void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch batch)
+        {
+
+            /*if (collider.IsColliding(Globals.ballCollider)) {
+                batch.Draw(_paddleTexture, _paddlePosition, Color.Green);
+            } 
+            else
+            {
+                batch.Draw(_paddleTexture, _paddlePosition, Color.White);
+            }*/
+            batch.Draw(_paddleTexture, _paddlePosition, Color.White);
+        }
+
+        private void BallCollision()
+        {
+            var newBallDirection = new Vector2(0, -1);
+
+            // get new ball direction based on where it hits
+            var ballX = Globals.theBall.GetBallPositionCenter().X;
+
+            // deflection degrees range from 45 to 135, (0-90, +45 ) 
+            // there's a 45 degree angle on both sides
+            float angleNextToNormal = 60f; // <- this should be const
+            float angleRange = angleNextToNormal * 2; 
+            float angleAdjustment = 90 - angleNextToNormal;
+
+            // get degree
+            double positionDifference = Globals.Clamp(ballX - _paddlePosition.X, 0, _paddleTexture.Width);
+
+            //Globals.debugValue = (_paddlePosition.X - ballX).ToString();
+
+            if(positionDifference == 0)
+            {
+                //positionDifference = _paddleTexture.Width;
+            }
+
+            float percentage = (float)(positionDifference / _paddleTexture.Width);
+            float angleDegrees = angleAdjustment + (percentage * angleRange);
+            double angleInRadians = MathHelper.ToRadians(angleDegrees);
+
+            newBallDirection = new Vector2(-(float)Math.Cos(angleInRadians), -(float)Math.Sin(angleInRadians));
+
+            Globals.theBall.BounceGap(newBallDirection);
+            Globals.theBall.PaddleBounce(newBallDirection);
+
+            if (Globals.soundEnabled) _paddleHitSound.Play();
+        }
+
+        private void PaddleMovement(GameTime gameTime, KeyboardState keyState)
+        {
             int paddleDirection = 0;
             if (keyState.IsKeyDown(Keys.Left)) paddleDirection -= 1;
             if (keyState.IsKeyDown(Keys.Right)) paddleDirection += 1;
@@ -59,31 +120,6 @@ namespace Pong.GameObjects
             float minX = 0;
             if (_paddlePosition.X > maxX) _paddlePosition.X = maxX;
             if (_paddlePosition.X < minX) _paddlePosition.X = minX;
-
-
-
-            // paddle collision
-            if (Globals.paddleCollider.IsColliding(Globals.ballCollider))
-            {
-                var paddleNormal = new Vector2(0, -1);
-                Globals.theBall.BounceGap(paddleNormal);
-                Globals.theBall.Bounce(paddleNormal);
-
-                _paddleHitSound.Play();
-            }
-        }
-
-        public void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch batch)
-        {
-
-            /*if (collider.IsColliding(Globals.ballCollider)) {
-                batch.Draw(_paddleTexture, _paddlePosition, Color.Green);
-            } 
-            else
-            {
-                batch.Draw(_paddleTexture, _paddlePosition, Color.White);
-            }*/
-            batch.Draw(_paddleTexture, _paddlePosition, Color.White);
         }
     }
 }

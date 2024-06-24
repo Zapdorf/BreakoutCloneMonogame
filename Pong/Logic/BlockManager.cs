@@ -26,16 +26,27 @@ namespace Pong.Logic
         private Texture2D _blockTexture;
 
         private SoundEffect _brokenSoundEffect;
+        private SoundEffect _victorySound;
 
-        public BlockManager(Texture2D texture, SoundEffect sound) 
+        private int _blocksRemaining;
+
+        private const int BLOCKS_WIDE = 8;
+        private const int BLOCKS_HIGH = 8;
+
+        private List<Timer> timers;
+
+        public BlockManager(Texture2D texture, SoundEffect breakSound, SoundEffect victorySound) 
         {
             blockList = new List<BlockObject>();
+            timers = new List<Timer>();
             _blockTexture = texture;
 
             _colorOptionList = new List<Color>() { Color.Purple, Color.BlueViolet, Color.MediumVioletRed };
 
-            _brokenSoundEffect = sound;
+            _brokenSoundEffect = breakSound;
+            _victorySound = victorySound;
 
+            _blocksRemaining = BLOCKS_HIGH * BLOCKS_WIDE;
             GenerateBlocks();
         }
 
@@ -46,6 +57,8 @@ namespace Pong.Logic
             {
                 block.Update(gameTime);
             }
+
+            foreach (Timer timer in timers) { timer.Update(gameTime); }
         }
 
         public void Draw(SpriteBatch batch)
@@ -61,19 +74,16 @@ namespace Pong.Logic
         {
             // create a bunch of new block objects
 
-            int blocksWide = 8;
-            int blocksHigh = 8;
-
-            Vector2 startPosition = new Vector2((Globals.ScreenWidth/2) - ((blocksWide/2) * _blockTexture.Width), _blockTexture.Height * 4);
+            Vector2 startPosition = new Vector2((Globals.ScreenWidth/2) - ((BLOCKS_WIDE/2) * _blockTexture.Width), _blockTexture.Height * 4);
             Vector2 currentPosition = startPosition;
 
             int colorIndex = 0;
 
-            for (int row=0; row < blocksHigh; row++)
+            for (int row=0; row < BLOCKS_HIGH; row++)
             {
-                for (int col=0; col < blocksWide; col++)
+                for (int col=0; col < BLOCKS_WIDE; col++)
                 {
-                    BlockObject block = new BlockObject(_blockTexture, _colorOptionList[colorIndex % _colorOptionList.Count], currentPosition, _brokenSoundEffect);
+                    BlockObject block = new BlockObject(_blockTexture, _colorOptionList[colorIndex % _colorOptionList.Count], currentPosition, _brokenSoundEffect, this);
                     blockList.Add(block);
                     
                     colorIndex++;
@@ -89,6 +99,24 @@ namespace Pong.Logic
         public void BlockDestroyed(int blockId)
         {
             // called by block object. Removes from list
+
+            _blocksRemaining--;
+
+            if(_blocksRemaining < 1)
+            {
+                _victorySound.Play();
+                Globals.theBall.NewLevelReset(); // reset ball
+                _blocksRemaining = BLOCKS_HIGH * BLOCKS_WIDE;
+                timers.Add(new Timer (1, ResetBlocks));
+            }
+        }
+
+        private void ResetBlocks()
+        {
+            foreach (BlockObject block in blockList)
+            {
+                block.Revive();
+            }
         }
     }
 }

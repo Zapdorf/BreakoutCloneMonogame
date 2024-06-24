@@ -2,6 +2,7 @@
 ## Bugs
 - double block hit bug
 - odd upward bounce when hitting multiple
+- ball will travel upward if hit straight up along block edge
 
 ---
 
@@ -16,13 +17,24 @@ i.e if collision and left of left side of sprite
 ---
 
 ## Features
-- Add other bounce normals to the blocks
 - particle system
 	- stationary star appearances 
+	- block explosion particles
 - sound system
 - animation
 	- glimmer effect on blocks (diagonal line)
-- deflection control (paddle is actually a dome)
+- ball death and reset
+- UI
+	- score
+	- multiplier
+	- lives left
+	- stage
+- score multiplier RGB effect
+- rgb ball trail
+- score factor to get new ball
+- pause feature
+	- dim screen
+	- dislpay text
  
 ---
 
