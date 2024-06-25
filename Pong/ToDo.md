@@ -3,6 +3,7 @@
 - double block hit bug
 - odd upward bounce when hitting multiple
 - ball will travel upward if hit straight up along block edge
+- Particle system stutters and the particles flash (timer and draw might be broken)
 
 ---
 
@@ -19,22 +20,21 @@ i.e if collision and left of left side of sprite
 ## Features
 - particle system
 	- stationary star appearances 
-	- block explosion particles
 - sound system
 - animation
 	- glimmer effect on blocks (diagonal line)
 - ball death and reset
 - UI
-	- score
-	- multiplier
 	- lives left
 	- stage
+	- multiplier ui rgb effect
 - score multiplier RGB effect
 - rgb ball trail
 - score factor to get new ball
 - pause feature
 	- dim screen
 	- dislpay text
+- Breakout™ original soundtrack™
  
 ---
 
@@ -43,3 +43,9 @@ i.e if collision and left of left side of sprite
 - scenes
 - scrolling background (smooth camera follow)
 - camera system
+
+---
+
+## Particle system wishlist
+- prebake option
+- layering options

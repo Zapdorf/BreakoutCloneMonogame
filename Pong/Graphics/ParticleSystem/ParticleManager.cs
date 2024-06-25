@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,10 @@ namespace Pong.Graphics.ParticleSystem
         private static readonly List<Particle> _particles = new();
         private static readonly List<ParticleEmitter> _emitters = new();
 
-        public static void Update()
+        public static void Update(GameTime gameTime)
         {
-            UpdateParticles();
-            UpdateEmitters();
+            UpdateParticles(gameTime);
+            UpdateEmitters(gameTime);
         }
 
         public static void Draw(SpriteBatch batch)
@@ -33,19 +34,21 @@ namespace Pong.Graphics.ParticleSystem
             _emitters.Add(particleEmitter);
         }
 
-        private static void UpdateEmitters()
+        private static void UpdateEmitters(GameTime gameTime)
         {
             foreach (var emitter in _emitters)
             {
                 emitter.Update();
             }
+
+            _emitters.RemoveAll(e => e.done);
         }
 
-        private static void UpdateParticles()
+        private static void UpdateParticles(GameTime gameTime)
         {
             foreach (var particle in _particles)
             {
-                particle.Update();
+                particle.Update(gameTime);
             }
 
             _particles.RemoveAll(p => p.done);

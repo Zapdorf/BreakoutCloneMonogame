@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Pong.GameObjects;
 using Pong.Graphics.ParticleSystem;
 using System;
 using System.Collections.Generic;
@@ -13,14 +14,16 @@ namespace Pong
     {
         public bool GamePaused;
 
+        private SpaceBackgroundEffect spaceBackgroundEffect;
+
         public GameManager() 
         {
-            
+            spaceBackgroundEffect = new();
         }
 
         public void Update(GameTime gameTime)
         {
-            ParticleManager.Update();
+            ParticleManager.Update(gameTime);
         }
 
         public void Draw(SpriteBatch batch)

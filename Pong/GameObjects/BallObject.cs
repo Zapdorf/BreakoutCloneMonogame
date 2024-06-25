@@ -28,7 +28,7 @@ namespace Pong.GameObjects
 
         private SoundEffect _ballDeadSoundEffect;
 
-        private ParticleEmitter _emitter;
+        //private ParticleEmitter _emitter;
 
 
         private const float DEFAULT_SPEED = 250;
@@ -38,15 +38,11 @@ namespace Pong.GameObjects
             _ballIsDead = false;
             _ballTexture = texture;
             //_ballPosition = new Vector2((Globals.ScreenWidth / 2) - (_ballTexture.Width/2), Globals.ScreenHeight / 2);
-            _ballPosition = new Vector2((Globals.ScreenWidth / 2) - (_ballTexture.Width/2), Globals.ScreenHeight / 2);
-            //_ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
+            //_ballPosition = new Vector2((Globals.ScreenWidth / 2) - (_ballTexture.Width/2), Globals.ScreenHeight / 2);
+            _ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
             //_ballPosition = new Vector2(0, 0);
 
-            //_velocity = new Vector2(0, 1);
-            //_velocity = new Vector2(0.5f, 0.5f);
-            _velocity = new Vector2(0.5f, -0.5f);
-            //_velocity = new Vector2(0f, -0.5f);
-            //_velocity = new Vector2(0f, 0f);
+            _velocity = new Vector2(0.5f, 0.5f);
             _velocity.Normalize();
             _speed = DEFAULT_SPEED;
 
@@ -58,14 +54,18 @@ namespace Pong.GameObjects
 
 
             // emission
-            ParticleEmitterData particleEmitterData = new ParticleEmitterData()
+            /*ParticleEmitterData particleEmitterData = new ParticleEmitterData()
             {
-                emissionInterval = 0.1f,
-                emittedEveryInterval = 10,
-                angleVariance = 100
+                emissionInterval = 0.05f,
+                emittedEveryInterval = 5,
+                angleVariance = 12,
+                lifespanMax = 3,
+                lifespanMin = 3,
+                speedMax = 0,
+                speedMin = 0
             };
-            //_emitter = new ParticleEmitter(particleEmitterData);
-            //ParticleManager.AddParticleEmitter(_emitter);
+            _emitter = new ParticleEmitter(particleEmitterData);
+            ParticleManager.AddParticleEmitter(_emitter);*/
         }
 
         public void Update(GameTime gameTime)

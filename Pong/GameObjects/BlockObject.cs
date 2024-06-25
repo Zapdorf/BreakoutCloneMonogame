@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Pong.Graphics.ParticleSystem;
 using Pong.Logic;
 using System;
 using System.Collections.Generic;
@@ -110,12 +111,50 @@ namespace Pong.GameObjects
             broken = true;
 
             // do a visual effect thing
+            BurstEffect();
 
             // play a sound
             if (Globals.soundEnabled) brokeSound.Play();
 
             // score multiplier
             if (Globals.scoreMultiplier < 6) Globals.scoreMultiplier++;
+        }
+
+
+        ParticleEmitter _emitter;
+        BoxEmitter _boxEmitter;
+        private void BurstEffect()
+        {
+            // create a fire once particle emitter with gravity enabled
+            var bottomRight = new Vector2(_blockTexture.Width, _blockTexture.Height) + _blockPositon;
+            _boxEmitter = new BoxEmitter(_blockPositon, bottomRight);
+
+            ParticleData particleData = new ParticleData()
+            {
+                startColor = _blockColor,
+                endColor = _blockColor,
+                gravityFactor = 3,
+                opacityEnd = 1f,
+                texture = Globals.Content.Load<Texture2D>("Images/blockParticle")
+            };
+            ParticleEmitterData particleemiiterdata = new()
+            {
+                particleData = particleData,
+                emissionInterval = 0,
+                emittedEveryInterval = 40,
+                angle = 270,
+                angleVariance = 300,
+                gravityEnabled = true,
+                emitOnce = true,
+                speedMax = 300f,
+                speedMin = 100f,
+                sizeMax = 0.7f,
+                sizeMin = 0.4f,
+                lifespanMax = 0.5f,
+                lifespanMin = 0.25f
+            };
+            _emitter = new ParticleEmitter(_boxEmitter, particleemiiterdata);
+            ParticleManager.AddParticleEmitter(_emitter);
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Pong.GameObjects;
 using Pong.Graphics.ParticleSystem;
 using Pong.Logic;
+using SharpDX.X3DAudio;
 
 namespace Pong
 {
@@ -60,7 +61,7 @@ namespace Pong
 
             Globals.scoreMultiplier = 1;
 
-            Globals.soundEnabled = false;
+            Globals.soundEnabled = true;
 
             Globals.debugValue = "debug";
 
@@ -99,6 +100,8 @@ namespace Pong
 
             // initialize paddle
             paddle = new PaddleObject(_paddleTexture, paddleHitSound);
+
+            
         }
 
         protected override void Update(GameTime gameTime)

@@ -52,14 +52,6 @@ namespace Pong.GameObjects
 
         public void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch batch)
         {
-
-            /*if (collider.IsColliding(Globals.ballCollider)) {
-                batch.Draw(_paddleTexture, _paddlePosition, Color.Green);
-            } 
-            else
-            {
-                batch.Draw(_paddleTexture, _paddlePosition, Color.White);
-            }*/
             batch.Draw(_paddleTexture, _paddlePosition, Color.White);
         }
 

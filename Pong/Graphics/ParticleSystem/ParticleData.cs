@@ -25,12 +25,36 @@ namespace Pong.Graphics.ParticleSystem
         public float opacityStart = 1f;
         public float opacityEnd = 0f;
 
-        public float startSize = 32f;
-        public float endSize = 4f;
+        public float startScale = 1f;
+        public float endScale = 0f;
 
         public float speed = 0f;
         public float angle = 0f;
 
+        public bool gravityEnabled = false;
+        public float gravityFactor = 2f;
+
         public ParticleData() { }
+
+        public void Copy(ParticleData data)
+        {
+            texture = data.texture;
+            lifespan = data.lifespan;
+
+            startColor = data.startColor;
+            endColor = data.endColor;   
+
+            opacityStart = data.opacityStart;   
+            opacityEnd = data.opacityEnd;   
+
+            startScale = data.startScale;
+            endScale = data.endScale;
+
+            speed = data.speed;
+            angle = data.angle;
+
+            gravityEnabled = data.gravityEnabled;
+            gravityFactor = data.gravityFactor;
+        }
     }
 }
