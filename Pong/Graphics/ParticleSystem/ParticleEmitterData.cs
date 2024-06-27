@@ -33,6 +33,8 @@ namespace Pong.Graphics.ParticleSystem
 
         public bool gravityEnabled = false;
         public bool emitOnce = false;
+
+        public bool prebaked = false;
         
         public ParticleEmitterData() { }
     }

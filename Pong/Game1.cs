@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Pong.GameObjects;
 using Pong.Graphics.ParticleSystem;
+using Pong.Graphics.TrailRenderer;
 using Pong.Logic;
 using SharpDX.X3DAudio;
 
@@ -28,18 +29,14 @@ namespace Pong
         SpriteFont bitwiseFont;
         SpriteFont arialTextFont;
 
-        Vector2 paddlePosition;
-        int paddleSpeed = 350;
-
-        int paddleHalfWidth;
-
         const int screenHeight = 800;
         const int screenWidth = 800;
-
 
         PaddleObject paddle;
         BlockManager blockMan;
         UiManager uiManager;
+
+        TrailSegment testSegment;
 
 
         public Game1()
@@ -74,7 +71,6 @@ namespace Pong
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-
             // TODO: use this.Content to load your game content here
             _ballTexture = Content.Load<Texture2D>("Images/ball");
             _paddleTexture = Content.Load<Texture2D>("Images/paddle");
@@ -101,7 +97,7 @@ namespace Pong
             // initialize paddle
             paddle = new PaddleObject(_paddleTexture, paddleHitSound);
 
-            
+            testSegment = new(GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime)
@@ -120,6 +116,7 @@ namespace Pong
             // TODO: Add your update logic here
             Globals.Update(gameTime);
             _gameManager.Update(gameTime);
+            uiManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -128,20 +125,22 @@ namespace Pong
         {
             GraphicsDevice.Clear(Color.Black);
 
-            
+
+            //testSegment.Draw();
+
 
             // TODO: Add your drawing code here
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack); // higher layer number means top
 
-            paddle.Draw(_spriteBatch);
-            blockMan.Draw(_spriteBatch);
+            paddle.Draw(_spriteBatch, 0.1f);
+            blockMan.Draw(_spriteBatch, 0.5f); 
+            Globals.theBall.Draw(_spriteBatch, 0.1f);
 
             _gameManager.Draw(_spriteBatch);
-            Globals.theBall.Draw(_spriteBatch);
+            
+            uiManager.Draw(_spriteBatch, 1);
 
             
-
-            uiManager.Draw(_spriteBatch);
 
             _spriteBatch.End();
 

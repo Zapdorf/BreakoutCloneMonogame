@@ -4,12 +4,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Pong.Logic;
 using SharpDX.Direct2D1;
+using SharpDX.Direct2D1.Effects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Pong.GameObjects
 {
@@ -50,9 +52,10 @@ namespace Pong.GameObjects
             }
         }
 
-        public void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch batch)
+        public void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch batch, float layer)
         {
-            batch.Draw(_paddleTexture, _paddlePosition, Color.White);
+            batch.Draw(_paddleTexture, _paddlePosition, null, Color.White, 0f, Vector2.Zero, 1f,
+                SpriteEffects.None, layer);
         }
 
         private void BallCollision()
@@ -100,11 +103,11 @@ namespace Pong.GameObjects
 
 
             // debug y movement
-            /*paddleDirection = 0;
+            paddleDirection = 0;
             if (keyState.IsKeyDown(Keys.Up)) paddleDirection -= 1;
             if (keyState.IsKeyDown(Keys.Down)) paddleDirection += 1;
             _paddlePosition.Y += paddleDirection * _paddleSpeed *
-                (float)gameTime.ElapsedGameTime.TotalSeconds;*/
+                (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 
             // boundaries

@@ -28,7 +28,8 @@ namespace Pong.GameObjects
 
         private SoundEffect _ballDeadSoundEffect;
 
-        //private ParticleEmitter _emitter;
+        private ParticleEmitter _emitter;
+        private PointEmitter _pointEmitter;
 
 
         private const float DEFAULT_SPEED = 250;
@@ -54,25 +55,29 @@ namespace Pong.GameObjects
 
 
             // emission
-            /*ParticleEmitterData particleEmitterData = new ParticleEmitterData()
+            _pointEmitter = new();
+            _pointEmitter.emissionPosition = GetBallPositionCenter();
+            ParticleEmitterData particleEmitterData = new ParticleEmitterData()
             {
-                emissionInterval = 0.05f,
-                emittedEveryInterval = 5,
+                emissionInterval = 0.01f,
+                emittedEveryInterval = 1,
                 angleVariance = 12,
                 lifespanMax = 3,
                 lifespanMin = 3,
                 speedMax = 0,
-                speedMin = 0
+                speedMin = 0,
+                sizeMax = 1,
+                sizeMin = 1
             };
-            _emitter = new ParticleEmitter(particleEmitterData);
-            ParticleManager.AddParticleEmitter(_emitter);*/
+            _emitter = new ParticleEmitter(_pointEmitter, particleEmitterData);
+            ParticleManager.AddParticleEmitter(_emitter);
         }
 
         public void Update(GameTime gameTime)
         {
             Globals.ballCollider.position = _ballPosition;
 
-            //_emitter.emissionPosition = GetBallPositionCenter();
+            _pointEmitter.emissionPosition = _ballIsDead || Globals.scoreMultiplier < 6 ? new Vector2(1000, 1000) : GetBallPositionCenter();
 
             _speed = DEFAULT_SPEED + ((Globals.scoreMultiplier-1) * 50 );
 
@@ -89,9 +94,11 @@ namespace Pong.GameObjects
             }
         }
 
-        public void Draw(SpriteBatch batch)
+        public void Draw(SpriteBatch batch, float layer)
         {
-            if(!_ballIsDead) batch.Draw(_ballTexture, _ballPosition, Color.White);
+            if (!_ballIsDead) { 
+                batch.Draw(_ballTexture, _ballPosition, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, layer);
+            }
         }
 
         public Vector2 GetBallPositionCenter()

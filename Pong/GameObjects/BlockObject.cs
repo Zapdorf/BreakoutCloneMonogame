@@ -60,9 +60,11 @@ namespace Pong.GameObjects
             }
         }
 
-        public void Draw(SpriteBatch batch)
+        public void Draw(SpriteBatch batch, float layer)
         {
-            if(!broken) batch.Draw(_blockTexture, _blockPositon, _blockColor);
+            if (!broken) { 
+                batch.Draw(_blockTexture, _blockPositon, null, _blockColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, layer); 
+            }
         }
 
         public void Revive()
@@ -135,7 +137,9 @@ namespace Pong.GameObjects
                 endColor = _blockColor,
                 gravityFactor = 3,
                 opacityEnd = 1f,
-                texture = Globals.Content.Load<Texture2D>("Images/blockParticle")
+                texture = Globals.Content.Load<Texture2D>("Images/blockParticle"),
+
+                spriteLayer = 0.9f
             };
             ParticleEmitterData particleemiiterdata = new()
             {

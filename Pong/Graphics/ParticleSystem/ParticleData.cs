@@ -17,6 +17,8 @@ namespace Pong.Graphics.ParticleSystem
 
         public Texture2D texture = Globals.Content.Load<Texture2D>("Images/particle");
 
+        public float spriteLayer = 0;
+
         public float lifespan = 2f;
 
         public Color startColor = Color.Yellow;
@@ -39,6 +41,9 @@ namespace Pong.Graphics.ParticleSystem
         public void Copy(ParticleData data)
         {
             texture = data.texture;
+
+            spriteLayer = data.spriteLayer;
+
             lifespan = data.lifespan;
 
             startColor = data.startColor;

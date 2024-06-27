@@ -92,7 +92,7 @@ namespace Pong.Graphics.ParticleSystem
         public void Draw(SpriteBatch batch)
         {
             batch.Draw(_data.texture, _position, null, _color * _opacity, 0f, _origin, _scale,
-                SpriteEffects.None, 1f);
+                SpriteEffects.None, _data.spriteLayer);
         }
     }
 }

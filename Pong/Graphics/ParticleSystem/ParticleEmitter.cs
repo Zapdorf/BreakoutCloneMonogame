@@ -22,26 +22,36 @@ namespace Pong.Graphics.ParticleSystem
             _data = data;
             _intervalLeft = _data.emissionInterval;
             _emitter = emitter;
+
+            if (data.prebaked)
+            {
+                Prebake();
+            }
         }
 
         public void Update()
         {
             if(done) return;
-            
+
             _intervalLeft -= Globals.ElapsedSeconds;
-            if(_intervalLeft <= 0f)
+            if (_intervalLeft <= 0f)
             {
                 _intervalLeft = _data.emissionInterval;
-                for (int i=0; i<_data.emittedEveryInterval; i++)
-                {
-                    Emit(_emitter.emissionPosition); // position could be randomized
-                }
+                SpawnWave();
             }
 
             if (_data.emitOnce) done = true;
         }
 
-        private void Emit(Vector2 pos)
+        private void SpawnWave()
+        {
+            for (int i = 0; i < _data.emittedEveryInterval; i++)
+            {
+                ParticleManager.AddParticle(Emit(_emitter.emissionPosition));
+            }
+        }
+
+        private Particle Emit(Vector2 pos)
         {
             // start with defaults
             ParticleData particleData = new();
@@ -61,7 +71,56 @@ namespace Pong.Graphics.ParticleSystem
 
             // instantiate particle
             Particle particle = new(pos, particleData);
-            ParticleManager.AddParticle(particle);
+            return particle;
         }
+
+        private void Prebake()
+        {
+            List<Particle> particles = new List<Particle>();
+            
+            // run simulation of 3 seconds or so instantly
+            int prebakeTime = 3; //seconds
+            float periods = prebakeTime / _data.emissionInterval;
+
+            
+            // how many intervals should have run?
+
+            // call update on the particle with fake game time
+
+            // advance fake clock
+
+
+            // subtract period, spawn amount, add to list
+            // update existing list by the same time amount
+            int floorPeriod = (int)Math.Floor(periods);
+            for(int i=0; i<floorPeriod; i++)
+            {
+                // advance existing particles
+                foreach(Particle particle in particles)
+                {
+                    GameTime gameTime = new GameTime();
+
+                    float value = _data.emissionInterval;
+                    int integerPart = (int)Math.Floor(value);
+                    double decimalPart = value - integerPart;
+
+                    var prebakeTimeSpanObj = new TimeSpan(0, 0, 0, integerPart, (int)(1000 * decimalPart));
+                    gameTime.ElapsedGameTime = prebakeTimeSpanObj;
+                    particle.Update(gameTime);
+                }
+
+                // emit new particles
+                for (int j = 0; j < _data.emittedEveryInterval; j++)
+                {
+                    particles.Add(Emit(_emitter.emissionPosition));
+                }
+            }
+
+            foreach (var item in particles)
+            {
+                ParticleManager.AddParticle(item);
+            }
+        }
+
     }
 }

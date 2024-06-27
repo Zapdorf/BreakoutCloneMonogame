@@ -61,12 +61,12 @@ namespace Pong.Logic
             foreach (Timer timer in timers) { timer.Update(gameTime); }
         }
 
-        public void Draw(SpriteBatch batch)
+        public void Draw(SpriteBatch batch, float layer)
         {
             // call draw on all the blocks
             foreach (BlockObject block in blockList)
             {
-                block.Draw(batch);
+                block.Draw(batch, layer);
             }
         }
 

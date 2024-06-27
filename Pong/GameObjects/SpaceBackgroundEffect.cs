@@ -25,22 +25,25 @@ namespace Pong.GameObjects
                 endColor = Color.White,
                 gravityFactor = 3,
                 opacityEnd = 1f,
+                endScale = 1f
             };
             ParticleEmitterData particleemiiterdata = new()
             {
                 particleData = particleData,
-                emissionInterval = 0.5f,
+                emissionInterval = 0.1f,
                 emittedEveryInterval = 1,
 
                 angle = 90,
                 angleVariance = 0,
 
-                speedMax = 100,
-                speedMin = 100,
-                sizeMax = 2f,
-                sizeMin = 0.5f,
-                lifespanMax = 5f,
-                lifespanMin = 1f
+                speedMax = 300,
+                speedMin = 300,
+                sizeMax = 1f,
+                sizeMin = 0.25f,
+                lifespanMax = 3f,
+                lifespanMin = 3f,
+
+                prebaked = true
             };
             _emitter = new ParticleEmitter(_boxEmitter, particleemiiterdata);
             ParticleManager.AddParticleEmitter(_emitter);
