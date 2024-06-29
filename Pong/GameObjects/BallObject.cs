@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Pong.Graphics;
 using Pong.Graphics.ParticleSystem;
 using Pong.Logic;
 using System;
@@ -8,8 +9,7 @@ using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
+
 
 namespace Pong.GameObjects
 {
@@ -24,12 +24,14 @@ namespace Pong.GameObjects
 
         private bool _ballIsDead;
 
-        private List<Timer> _timers;
+        private List<GameLogicTimer> _timers;
 
         private SoundEffect _ballDeadSoundEffect;
 
         private ParticleEmitter _emitter;
         private PointEmitter _pointEmitter;
+
+        private RgbEffect rgbEffect;
 
 
         private const float DEFAULT_SPEED = 250;
@@ -51,23 +53,34 @@ namespace Pong.GameObjects
 
             Globals.ballCollider = new CollisionDetector(_ballTexture.Width, _ballTexture.Height);
 
-            _timers = new List<Timer>();
+            _timers = new List<GameLogicTimer>();
 
 
             // emission
+            rgbEffect = new();
             _pointEmitter = new();
             _pointEmitter.emissionPosition = GetBallPositionCenter();
+            ParticleData particle = new()
+            {
+                endScale = 1f,
+
+                endColor = rgbEffect.GetCurrentColor(),
+                startColor = rgbEffect.GetCurrentColor()
+            };
             ParticleEmitterData particleEmitterData = new ParticleEmitterData()
             {
+                particleData = particle,
+
                 emissionInterval = 0.01f,
                 emittedEveryInterval = 1,
                 angleVariance = 12,
-                lifespanMax = 3,
-                lifespanMin = 3,
+                lifespanMax = 1,
+                lifespanMin = 1,
                 speedMax = 0,
                 speedMin = 0,
                 sizeMax = 1,
-                sizeMin = 1
+                sizeMin = 1,
+
             };
             _emitter = new ParticleEmitter(_pointEmitter, particleEmitterData);
             ParticleManager.AddParticleEmitter(_emitter);
@@ -81,6 +94,9 @@ namespace Pong.GameObjects
 
             _speed = DEFAULT_SPEED + ((Globals.scoreMultiplier-1) * 50 );
 
+            UpdateParticleTrailEffect(gameTime);
+            
+
             // basic movement
             BasicMovement(gameTime);
 
@@ -88,7 +104,7 @@ namespace Pong.GameObjects
             CheckForWallBounces();
 
             // update timers
-            foreach(Timer timer in _timers)
+            foreach(var timer in _timers)
             {
                 timer.Update(gameTime);
             }
@@ -120,7 +136,7 @@ namespace Pong.GameObjects
             _velocity = (_velocity - 2 * DotProd(normal, _velocity) * normal);
             _velocity.Normalize();
 
-            //TemporarilyDisableCollider();
+            TemporarilyDisableCollider();
         }
 
         public void BounceGap(Vector2 normal)
@@ -143,7 +159,13 @@ namespace Pong.GameObjects
             _velocity = Vector2.Zero;
 
             // start timer
-            _timers.Add(new Timer(1.5f, BallReset));
+            _timers.Add(new GameLogicTimer(1.5f, true, BallReset));
+        }
+
+        private void UpdateParticleTrailEffect(GameTime gameTime)
+        {
+            rgbEffect.Update(gameTime);
+            _emitter.ChangeParticleColors(rgbEffect.GetCurrentColor());
         }
 
         private void BasicMovement(GameTime gameTime)
@@ -193,7 +215,7 @@ namespace Pong.GameObjects
         private void TemporarilyDisableCollider()
         {
             Globals.ballCollider.disabled = true;
-            _timers.Add(new Timer(0.5, ReenableCollider));
+            _timers.Add(new GameLogicTimer(0.05f, true, ReenableCollider));
         }
 
         private void ReenableCollider()
@@ -214,25 +236,33 @@ namespace Pong.GameObjects
             _ballIsDead = true;
             _velocity = Vector2.Zero;
 
+            Globals.livesLeft--;
+
             // start timer
-            _timers.Add(new Timer(1.5f, BallReset));
+            _timers.Add(new GameLogicTimer(1.5f, true, BallReset));
         }
 
         private void BallReset()
         {
-            _ballIsDead = false;
-            _ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
+            // check if the game is over
+            if (Globals.livesLeft < 0)
+            {
+                // display game over stuff and allow for game reset
+                Globals.inGameOverState = true;
+            } 
+            else
+            {
+                _ballIsDead = false;
+                _ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
 
-            _velocity = new Vector2(0.5f, 0.5f);
-            _velocity.Normalize();
+                _velocity = new Vector2(0.5f, 0.5f);
+                _velocity.Normalize();
 
-            Globals.scoreMultiplier = 1;
-            _speed = DEFAULT_SPEED;
-        }
-
-        private void TestTimerAction()
-        {
-            Globals.debugValue = "Timer finished";
+                Globals.scoreMultiplier = 1;
+                _speed = DEFAULT_SPEED;
+            }
+            
+            
         }
     }
 }

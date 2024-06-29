@@ -87,6 +87,30 @@
 /processorParam:TextureFormat=Color
 /build:Images/particle.png
 
+#begin Images/UI_Images/HealthBarTest.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/UI_Images/HealthBarTest.png
+
+#begin Images/UI_Images/HealthBarTestBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/UI_Images/HealthBarTestBackground.png
+
 #begin Sound/blipSelect.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

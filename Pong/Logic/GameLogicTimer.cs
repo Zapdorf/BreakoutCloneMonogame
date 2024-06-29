@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Pong.Logic
 {
-    public class Timer
+    public class GameLogicTimer
     {
         /*
          * Basically a coroutine
@@ -16,30 +15,50 @@ namespace Pong.Logic
          */
 
         public bool done;
+        public bool running;
         
         private double _duration; // in seconds
         private Action _action;
         private double _timeElapsed;
         
 
-        public Timer(double dur, Action act) 
+        public GameLogicTimer(double dur, bool startNow, Action act) 
         {
             done = false;
             _duration = dur;
             _action = act;
             _timeElapsed = 0;
+            running = startNow;
         }
 
         public void Update(GameTime gameTime)
         {
-            if (done) return;
+            if (done || !running) return;
             _timeElapsed += gameTime.ElapsedGameTime.TotalSeconds;
             if(_timeElapsed > _duration) Finish();
         }
 
         public void TerminateEarly()
         {
+            // cancels the timer
             done = true;
+        }
+
+        public void Reset()
+        {
+            _timeElapsed = 0;
+            done = false;
+        }
+
+        public void ActivateNow()
+        {
+            // for use with delayed start
+            running = true;
+        }
+
+        public void PauseTimer()
+        {
+            running = false;
         }
 
         private void Finish()

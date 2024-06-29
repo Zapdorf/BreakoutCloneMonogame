@@ -23,7 +23,17 @@ namespace Pong.Graphics.TrailRenderer
          * Objectives
          * - layering
          * - vector 2 coords to these coords
-         * 
+         
+        TrailSegment
+         LineRenderer
+            LineRendererData
+            - thickness
+            - smoothness?
+            - color effects
+            - segment length
+            - length of trail in segements (X)
+            - fade out or taper
+            - decay rate
          */
 
         public TrailSegment(GraphicsDevice _graphics)

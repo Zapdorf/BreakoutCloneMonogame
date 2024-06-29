@@ -6,6 +6,7 @@ using Pong.GameObjects;
 using Pong.Graphics.ParticleSystem;
 using Pong.Graphics.TrailRenderer;
 using Pong.Logic;
+using Pong.UI;
 using SharpDX.X3DAudio;
 
 namespace Pong
@@ -57,6 +58,8 @@ namespace Pong
             Globals.ScreenWidth = screenWidth;
 
             Globals.scoreMultiplier = 1;
+            Globals.livesLeft = 3;
+            Globals.inGameOverState = false;
 
             Globals.soundEnabled = true;
 
@@ -97,7 +100,7 @@ namespace Pong
             // initialize paddle
             paddle = new PaddleObject(_paddleTexture, paddleHitSound);
 
-            testSegment = new(GraphicsDevice);
+            //testSegment = new(GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime)
@@ -116,7 +119,7 @@ namespace Pong
             // TODO: Add your update logic here
             Globals.Update(gameTime);
             _gameManager.Update(gameTime);
-            uiManager.Update(gameTime);
+            uiManager.Update(gameTime, Keyboard.GetState());
 
             base.Update(gameTime);
         }
@@ -125,9 +128,7 @@ namespace Pong
         {
             GraphicsDevice.Clear(Color.Black);
 
-
             //testSegment.Draw();
-
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(SpriteSortMode.FrontToBack); // higher layer number means top
@@ -139,8 +140,6 @@ namespace Pong
             _gameManager.Draw(_spriteBatch);
             
             uiManager.Draw(_spriteBatch, 1);
-
-            
 
             _spriteBatch.End();
 

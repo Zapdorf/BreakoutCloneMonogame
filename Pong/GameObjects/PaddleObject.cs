@@ -103,11 +103,11 @@ namespace Pong.GameObjects
 
 
             // debug y movement
-            paddleDirection = 0;
+            /*paddleDirection = 0;
             if (keyState.IsKeyDown(Keys.Up)) paddleDirection -= 1;
             if (keyState.IsKeyDown(Keys.Down)) paddleDirection += 1;
             _paddlePosition.Y += paddleDirection * _paddleSpeed *
-                (float)gameTime.ElapsedGameTime.TotalSeconds;
+                (float)gameTime.ElapsedGameTime.TotalSeconds;*/
 
 
             // boundaries

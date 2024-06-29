@@ -14,17 +14,17 @@ namespace Pong.Logic
          * Lots of stuff I don't want to implement repeatedly
          */
 
-        private List<Timer> timers;
+        private List<GameLogicTimer> timers;
 
         public TimerCollection() 
         { 
-            timers = new List<Timer>();
+            timers = new List<GameLogicTimer>();
         }
 
         public void Update(GameTime gameTime)
         {
-            var doneTimers = new List<Timer>();
-            foreach (Timer timer in timers)
+            var doneTimers = new List<GameLogicTimer>();
+            foreach (var timer in timers)
             {
                 timer.Update(gameTime);
                 if (timer.done) doneTimers.Add(timer);
@@ -33,7 +33,7 @@ namespace Pong.Logic
             CullTimers(doneTimers);
         }
 
-        public void AddTimer(Timer newTimer)
+        public void AddTimer(GameLogicTimer newTimer)
         {
             timers.Add(newTimer);
         }
@@ -43,9 +43,9 @@ namespace Pong.Logic
             // assign timers names so that they can be found
         }
 
-        private void CullTimers(List<Timer> timersToRemove)
+        private void CullTimers(List<GameLogicTimer> timersToRemove)
         {
-            foreach (Timer timer in timersToRemove)
+            foreach (var timer in timersToRemove)
             {
                 timers.Remove(timer); // make sure this removes the right timers
             }

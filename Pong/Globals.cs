@@ -33,6 +33,7 @@ namespace Pong
         public static int livesLeft { get; set; } // display as balls
         public static int level { get; set; } // might go unused
 
+        public static bool inGameOverState { get; set; }
 
         public static Random random { get; set; } = new();
 
@@ -55,6 +56,11 @@ namespace Pong
         public static float RandomFloat(float min, float max)
         {
             return (float)(random.NextDouble() * (max - min)) + min;
+        }
+
+        public static Vector2 ScreenCenter()
+        {
+            return new Vector2(ScreenWidth/2, ScreenHeight/2);
         }
     }
 }

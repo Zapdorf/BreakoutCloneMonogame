@@ -12,15 +12,16 @@ namespace Pong.Graphics.ParticleSystem
         //public Vector2 emissionPosition { get; set; }
         public bool done;
         
-        private readonly ParticleEmitterData _data;
+        public ParticleEmitterData emitterData;
+
         private float _intervalLeft;
         private IEmitter _emitter;
 
 
         public ParticleEmitter(IEmitter emitter, ParticleEmitterData data) 
         {
-            _data = data;
-            _intervalLeft = _data.emissionInterval;
+            emitterData = data;
+            _intervalLeft = emitterData.emissionInterval;
             _emitter = emitter;
 
             if (data.prebaked)
@@ -36,16 +37,27 @@ namespace Pong.Graphics.ParticleSystem
             _intervalLeft -= Globals.ElapsedSeconds;
             if (_intervalLeft <= 0f)
             {
-                _intervalLeft = _data.emissionInterval;
+                _intervalLeft = emitterData.emissionInterval;
                 SpawnWave();
             }
 
-            if (_data.emitOnce) done = true;
+            if (emitterData.emitOnce) done = true;
+        }
+
+        public void ChangeParticleColors(Color newColor)
+        {
+            /*
+             * This method is hyper specific for use with the RGB color effect
+             * Ideally this method will be made generic later
+             * or maybe I'll edit the particle system to have a built in option for color changing
+             */
+            emitterData.particleData.endColor = newColor;
+            emitterData.particleData.startColor = newColor;
         }
 
         private void SpawnWave()
         {
-            for (int i = 0; i < _data.emittedEveryInterval; i++)
+            for (int i = 0; i < emitterData.emittedEveryInterval; i++)
             {
                 ParticleManager.AddParticle(Emit(_emitter.emissionPosition));
             }
@@ -55,19 +67,19 @@ namespace Pong.Graphics.ParticleSystem
         {
             // start with defaults
             ParticleData particleData = new();
-            particleData.Copy(_data.particleData);
+            particleData.Copy(emitterData.particleData);
 
-            particleData.angle = _data.angle;
-            particleData.gravityEnabled = _data.gravityEnabled;
+            particleData.angle = emitterData.angle;
+            particleData.gravityEnabled = emitterData.gravityEnabled;
 
             // randomize
-            particleData.lifespan = Globals.RandomFloat(_data.lifespanMin, _data.lifespanMax);
-            particleData.startScale = Globals.RandomFloat(_data.sizeMin, _data.sizeMax);
-            particleData.speed = Globals.RandomFloat(_data.speedMin, _data.speedMax);
+            particleData.lifespan = Globals.RandomFloat(emitterData.lifespanMin, emitterData.lifespanMax);
+            particleData.startScale = Globals.RandomFloat(emitterData.sizeMin, emitterData.sizeMax);
+            particleData.speed = Globals.RandomFloat(emitterData.speedMin, emitterData.speedMax);
             //particleData.speed = _data.speedMax;
 
             float range = (float)(Globals.random.NextDouble() * 2) - 1; // random float from -1 to 1
-            particleData.angle += _data.angleVariance * range;
+            particleData.angle += emitterData.angleVariance * range;
 
             // instantiate particle
             Particle particle = new(pos, particleData);
@@ -80,7 +92,7 @@ namespace Pong.Graphics.ParticleSystem
             
             // run simulation of 3 seconds or so instantly
             int prebakeTime = 3; //seconds
-            float periods = prebakeTime / _data.emissionInterval;
+            float periods = prebakeTime / emitterData.emissionInterval;
 
             
             // how many intervals should have run?
@@ -100,7 +112,7 @@ namespace Pong.Graphics.ParticleSystem
                 {
                     GameTime gameTime = new GameTime();
 
-                    float value = _data.emissionInterval;
+                    float value = emitterData.emissionInterval;
                     int integerPart = (int)Math.Floor(value);
                     double decimalPart = value - integerPart;
 
@@ -110,7 +122,7 @@ namespace Pong.Graphics.ParticleSystem
                 }
 
                 // emit new particles
-                for (int j = 0; j < _data.emittedEveryInterval; j++)
+                for (int j = 0; j < emitterData.emittedEveryInterval; j++)
                 {
                     particles.Add(Emit(_emitter.emissionPosition));
                 }

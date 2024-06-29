@@ -14,17 +14,26 @@
 
 ---
 
+### GameObject class
+- position
+- draw method (abstract)
+- update method (abstract)
+- collider extension class
+- update resolution method (alter image scale and position)
+
+
+---
+
 ## Features
 - particle system
 	- stationary star appearances 
 - animation
 	- glimmer effect on blocks (diagonal line)
+	- ball animation
 - ball life system
 - UI
 	- lives left
 	- stage
-- score multiplier RGB effect
-- rgb ball trail
 - score factor to get new ball
 - pause feature
 	- dim screen
@@ -35,8 +44,8 @@
 ---
 
 ## Order of things to do
-1. trail system
 1. lives left system
+1. game over and press space to start
  
 ---
 
@@ -45,9 +54,5 @@
 - scenes
 - scrolling background (smooth camera follow)
 - camera system
+- trail renderer again?
 
----
-
-## Particle system wishlist
-- prebake option
-- layering options

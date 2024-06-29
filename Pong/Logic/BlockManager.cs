@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Texture2D = Microsoft.Xna.Framework.Graphics.Texture2D;
 
@@ -33,12 +32,12 @@ namespace Pong.Logic
         private const int BLOCKS_WIDE = 8;
         private const int BLOCKS_HIGH = 8;
 
-        private List<Timer> timers;
+        private List<GameLogicTimer> timers;
 
         public BlockManager(Texture2D texture, SoundEffect breakSound, SoundEffect victorySound) 
         {
             blockList = new List<BlockObject>();
-            timers = new List<Timer>();
+            timers = new List<GameLogicTimer>();
             _blockTexture = texture;
 
             _colorOptionList = new List<Color>() { Color.Purple, Color.BlueViolet, Color.MediumVioletRed };
@@ -58,7 +57,7 @@ namespace Pong.Logic
                 block.Update(gameTime);
             }
 
-            foreach (Timer timer in timers) { timer.Update(gameTime); }
+            foreach (var timer in timers) { timer.Update(gameTime); }
         }
 
         public void Draw(SpriteBatch batch, float layer)
@@ -107,7 +106,7 @@ namespace Pong.Logic
                 _victorySound.Play();
                 Globals.theBall.NewLevelReset(); // reset ball
                 _blocksRemaining = BLOCKS_HIGH * BLOCKS_WIDE;
-                timers.Add(new Timer (1, ResetBlocks));
+                timers.Add(new GameLogicTimer(1, true, ResetBlocks));
             }
         }
 
