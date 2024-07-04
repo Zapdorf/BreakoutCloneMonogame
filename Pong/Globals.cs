@@ -34,6 +34,8 @@ namespace Pong
         public static int level { get; set; } // might go unused
 
         public static bool inGameOverState { get; set; }
+        public static bool gameStarted { get; set; }
+        public static bool gamePaused { get; set; }
 
         public static Random random { get; set; } = new();
 

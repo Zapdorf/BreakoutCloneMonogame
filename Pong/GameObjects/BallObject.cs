@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 
 
@@ -36,20 +37,17 @@ namespace Pong.GameObjects
 
         private const float DEFAULT_SPEED = 250;
 
-        public BallObject(Texture2D texture, SoundEffect ballDeadSound) 
+        public BallObject() 
         {
             _ballIsDead = false;
-            _ballTexture = texture;
-            //_ballPosition = new Vector2((Globals.ScreenWidth / 2) - (_ballTexture.Width/2), Globals.ScreenHeight / 2);
-            //_ballPosition = new Vector2((Globals.ScreenWidth / 2) - (_ballTexture.Width/2), Globals.ScreenHeight / 2);
+            _ballTexture = Globals.Content.Load<Texture2D>("Images/ball");
             _ballPosition = new Vector2(0, Globals.ScreenHeight / 2);
-            //_ballPosition = new Vector2(0, 0);
 
             _velocity = new Vector2(0.5f, 0.5f);
             _velocity.Normalize();
             _speed = DEFAULT_SPEED;
 
-            _ballDeadSoundEffect = ballDeadSound;
+            _ballDeadSoundEffect = Globals.Content.Load<SoundEffect>("Sound/synth"); ;
 
             Globals.ballCollider = new CollisionDetector(_ballTexture.Width, _ballTexture.Height);
 
@@ -84,13 +82,15 @@ namespace Pong.GameObjects
             };
             _emitter = new ParticleEmitter(_pointEmitter, particleEmitterData);
             ParticleManager.AddParticleEmitter(_emitter);
+            _pointEmitter.emissionPosition = new Vector2(1000, 1000);
         }
 
         public void Update(GameTime gameTime)
         {
             Globals.ballCollider.position = _ballPosition;
 
-            _pointEmitter.emissionPosition = _ballIsDead || Globals.scoreMultiplier < 6 ? new Vector2(1000, 1000) : GetBallPositionCenter();
+            var hideParticleSystem = _ballIsDead || Globals.scoreMultiplier < 6;
+            _pointEmitter.emissionPosition = hideParticleSystem ? new Vector2(1000, 1000) : GetBallPositionCenter();
 
             _speed = DEFAULT_SPEED + ((Globals.scoreMultiplier-1) * 50 );
 
@@ -136,7 +136,7 @@ namespace Pong.GameObjects
             _velocity = (_velocity - 2 * DotProd(normal, _velocity) * normal);
             _velocity.Normalize();
 
-            TemporarilyDisableCollider();
+            //TemporarilyDisableCollider();
         }
 
         public void BounceGap(Vector2 normal)
@@ -242,7 +242,7 @@ namespace Pong.GameObjects
             _timers.Add(new GameLogicTimer(1.5f, true, BallReset));
         }
 
-        private void BallReset()
+        public void BallReset()
         {
             // check if the game is over
             if (Globals.livesLeft < 0)

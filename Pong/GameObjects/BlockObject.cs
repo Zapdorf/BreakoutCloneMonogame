@@ -6,6 +6,7 @@ using Pong.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace Pong.GameObjects
 
         private bool broken;
 
-        private SoundEffect brokeSound;
+        private SoundEffect _blockBreakSound;
 
         private BlockManager _manager;
 
@@ -38,7 +39,7 @@ namespace Pong.GameObjects
 
             broken = false;
 
-            brokeSound = hitSound;
+            _blockBreakSound = SoundEffectManager.BlockBreakSound;
 
             _manager = manager;
         }
@@ -52,7 +53,6 @@ namespace Pong.GameObjects
             {
                 // hit ball
                 Vector2 norm = DetermineNormal();
-
 
                 Globals.theBall.BounceGap(norm);
                 Globals.theBall.Bounce(norm);
@@ -116,7 +116,7 @@ namespace Pong.GameObjects
             BurstEffect();
 
             // play a sound
-            if (Globals.soundEnabled) brokeSound.Play();
+            if (Globals.soundEnabled) _blockBreakSound.Play();
 
             // score multiplier
             if (Globals.scoreMultiplier < 6) Globals.scoreMultiplier++;

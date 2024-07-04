@@ -6,6 +6,7 @@ using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Windows.Forms;
 using Texture2D = Microsoft.Xna.Framework.Graphics.Texture2D;
@@ -22,7 +23,6 @@ namespace Pong.Logic
         public List<BlockObject> blockList;
 
         private List<Color> _colorOptionList;
-        private Texture2D _blockTexture;
 
         private SoundEffect _brokenSoundEffect;
         private SoundEffect _victorySound;
@@ -34,18 +34,21 @@ namespace Pong.Logic
 
         private List<GameLogicTimer> timers;
 
-        public BlockManager(Texture2D texture, SoundEffect breakSound, SoundEffect victorySound) 
+        private Texture2D _blockTexture;
+
+        public BlockManager() 
         {
             blockList = new List<BlockObject>();
             timers = new List<GameLogicTimer>();
-            _blockTexture = texture;
 
             _colorOptionList = new List<Color>() { Color.Purple, Color.BlueViolet, Color.MediumVioletRed };
 
-            _brokenSoundEffect = breakSound;
-            _victorySound = victorySound;
+            _victorySound = SoundEffectManager.VictorySound;
 
             _blocksRemaining = BLOCKS_HIGH * BLOCKS_WIDE;
+
+            _blockTexture = Globals.Content.Load<Texture2D>("Images/BlankBlock");
+
             GenerateBlocks();
         }
 
@@ -103,14 +106,14 @@ namespace Pong.Logic
 
             if(_blocksRemaining < 1)
             {
-                _victorySound.Play();
+                if (Globals.soundEnabled) _victorySound.Play();
                 Globals.theBall.NewLevelReset(); // reset ball
                 _blocksRemaining = BLOCKS_HIGH * BLOCKS_WIDE;
                 timers.Add(new GameLogicTimer(1, true, ResetBlocks));
             }
         }
 
-        private void ResetBlocks()
+        public void ResetBlocks()
         {
             foreach (BlockObject block in blockList)
             {

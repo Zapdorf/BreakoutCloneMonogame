@@ -51,6 +51,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/BlankBlock.png
 
+#begin Images/BlankBlock2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/BlankBlock2.png
+
 #begin Images/blockParticle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -87,30 +99,6 @@
 /processorParam:TextureFormat=Color
 /build:Images/particle.png
 
-#begin Images/UI_Images/HealthBarTest.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Images/UI_Images/HealthBarTest.png
-
-#begin Images/UI_Images/HealthBarTestBackground.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Images/UI_Images/HealthBarTestBackground.png
-
 #begin Sound/blipSelect.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -129,11 +117,23 @@
 /processorParam:Quality=Best
 /build:Sound/explosion2.wav
 
+#begin Sound/explosion3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/explosion3.wav
+
 #begin Sound/hitHurt.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/hitHurt.wav
+
+#begin Sound/hitHurt2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/hitHurt2.wav
 
 #begin Sound/powerUp.wav
 /importer:WavImporter
@@ -141,9 +141,21 @@
 /processorParam:Quality=Best
 /build:Sound/powerUp.wav
 
+#begin Sound/SpaceBreakoutSoundtrackDraft.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sound/SpaceBreakoutSoundtrackDraft.wav
+
 #begin Sound/synth.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/synth.wav
+
+#begin Sound/synth2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/synth2.wav
 

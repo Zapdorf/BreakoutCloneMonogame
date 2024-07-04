@@ -26,13 +26,13 @@ namespace Pong.GameObjects
 
         private SoundEffect _paddleHitSound;
 
-        public PaddleObject(Texture2D texture, SoundEffect paddleHit) {
-            _paddleTexture = texture;
+        public PaddleObject() {
+            _paddleTexture = Globals.Content.Load<Texture2D>("Images/paddle"); ;
 
             _paddleHalfWidth = _paddleTexture.Width / 2;
-            _paddlePosition = new Vector2((Globals.ScreenWidth / 2) - _paddleHalfWidth, Globals.ScreenHeight - 100);
+            ResetPaddle();
 
-            _paddleHitSound = paddleHit;
+            _paddleHitSound = Globals.Content.Load<SoundEffect>("Sound/synth2");
 
             Globals.paddleCollider = new CollisionDetector(_paddleTexture.Width, _paddleTexture.Height);
         }
@@ -56,6 +56,11 @@ namespace Pong.GameObjects
         {
             batch.Draw(_paddleTexture, _paddlePosition, null, Color.White, 0f, Vector2.Zero, 1f,
                 SpriteEffects.None, layer);
+        }
+
+        public void ResetPaddle()
+        {
+            _paddlePosition = new Vector2((Globals.ScreenWidth / 2) - _paddleHalfWidth, Globals.ScreenHeight - 100);
         }
 
         private void BallCollision()
