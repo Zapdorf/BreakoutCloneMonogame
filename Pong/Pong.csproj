@@ -10,6 +10,7 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>PongIcon.ico</ApplicationIcon>
+    <AssemblyName>Space Breakout</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="PongIcon.ico" />
